@@ -471,43 +471,38 @@ export default function DevServicesPage() {
     }
 
     function render(time: number) {
-      const gl = glRef.current;
-      const program = programRef.current;
-      const positionAttributeLocation = positionAttributeLocationRef.current;
-      const timeUniformLocation = timeUniformLocationRef.current;
-      const resolutionUniformLocation = resolutionUniformLocationRef.current;
-      const positionBuffer = positionBufferRef.current;
+  const gl = glRef.current;
+  const program = programRef.current;
+  const positionAttributeLocation = positionAttributeLocationRef.current;
+  const timeUniformLocation = timeUniformLocationRef.current;
+  const resolutionUniformLocation = resolutionUniformLocationRef.current;
+  const positionBuffer = positionBufferRef.current;
+  const canvas = canvasRef.current;               // ← added
 
-      if (
-        !gl ||
-        !program ||
-        positionAttributeLocation === null ||
-        !timeUniformLocation ||
-        !resolutionUniformLocation ||
-        !positionBuffer
-      )
-        return;
+  if (
+    !gl ||
+    !program ||
+    positionAttributeLocation === null ||
+    !timeUniformLocation ||
+    !resolutionUniformLocation ||
+    !positionBuffer ||
+    !canvas                                  // ← added to guard
+  )
+    return;
 
-      gl.clearColor(0.1, 0.1, 0.2, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.clearColor(0.1, 0.1, 0.2, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
 
-      gl.enableVertexAttribArray(positionAttributeLocation);
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-      gl.vertexAttribPointer(
-        positionAttributeLocation,
-        2,
-        gl.FLOAT,
-        false,
-        0,
-        0
-      );
+  gl.enableVertexAttribArray(positionAttributeLocation);
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-      gl.uniform1f(timeUniformLocation, time * 0.001);
-      gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+  gl.uniform1f(timeUniformLocation, time * 0.001);
+  gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      requestAnimationFrame(render);
-    }
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  requestAnimationFrame(render);
+}
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
